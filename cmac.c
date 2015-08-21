@@ -72,6 +72,15 @@ static unsigned const char const_Rb[BLOCK_SIZE] = { 0x00, 0x00, 0x00, 0x00, 0x00
 static unsigned const char const_Zero[BLOCK_SIZE] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
+int AES_CMAC_CHECK(const unsigned char *key, const unsigned char *input, int length,
+		const unsigned char *mac){
+	unsigned char T[BLOCK_SIZE];
+	AES_CMAC(key, input, length, T);
+	/*print128(T);
+	printf("\n");
+	print128(mac);*/
+	return memcmp(mac, T, BLOCK_SIZE);
+}
 
 static void AES_128(unsigned const char *key, unsigned const char* msg, unsigned char *cipher){
 	unsigned char key_copy[BLOCK_SIZE];
