@@ -17,9 +17,11 @@ unsigned char const_Zero[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 
 /* Basic Functions */
 
-void AES_128(unsigned char* msg, unsigned char *key, unsigned char *cipher){
+void AES_128(unsigned char *key, unsigned char* msg, unsigned char *cipher){
 	memcpy(cipher, msg, 16);
-	aes_enc_dec(cipher, key, 0);
+	unsigned char key_copy[16];
+	memcpy(key_copy, key, 16);
+	aes_enc_dec(cipher, key_copy, 0);
 }
 
 void xor_128(unsigned char *a, unsigned char *b, unsigned char *out) {
@@ -79,14 +81,9 @@ void leftshift_onebit(unsigned char *input, unsigned char *output) {
 void generate_subkey(unsigned char *key, unsigned char *K1, unsigned
 char *K2) {
 	unsigned char L[16];
-	unsigned char Z[16];
 	unsigned char tmp[16];
-	int i;
 
-	for (i = 0; i < 16; i++)
-		Z[i] = 0;
-
-	AES_128(key, Z, L);
+	AES_128(key, const_Zero, L);
 
 	if ((L[0] & 0x80) == 0) { /* If MSB(L) = 0, then K1 = L << 1 */
 		leftshift_onebit(L, K1);
