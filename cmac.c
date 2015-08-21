@@ -26,6 +26,13 @@
  *
  */
 
+/****************************************************************/
+/* AES-CMAC with AES-128 bit                                    */
+/* CMAC     Algorithm described in SP800-38B                    */
+/* Author: Junhyuk Song (junhyuk.song@samsung.com)              */
+/*         Jicheol Lee  (jicheol.lee@samsung.com)               */
+/****************************************************************/
+
 #include "cmac.h"
 #include "TI_aes_128.h"
 #include <string.h>
