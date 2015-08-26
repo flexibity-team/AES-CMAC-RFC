@@ -28,6 +28,10 @@
 #ifndef CMAC_H_
 #define CMAC_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define BLOCK_SIZE 16
 #define LAST_INDEX (BLOCK_SIZE - 1)
 
@@ -43,5 +47,8 @@ void print128(const unsigned char *bytes);
 void print96(const unsigned char *bytes);
 #endif
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CMAC_H_ */
