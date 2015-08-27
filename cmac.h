@@ -41,7 +41,7 @@ void AES_CMAC(const unsigned char *key, const unsigned char *input, int length,
 int AES_CMAC_CHECK(const unsigned char *key, const unsigned char *input, int length,
 		const unsigned char *mac);
 
-#ifdef CMAC_DEBUG_ON
+#ifdef DEBUG_CMAC
 void print_hex(const char *str, const unsigned char *buf, int len);
 void print128(const unsigned char *bytes);
 void print96(const unsigned char *bytes);

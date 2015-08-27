@@ -37,7 +37,7 @@
 #include "TI_aes_128.h"
 #include <string.h>
 
-#ifdef CMAC_DEBUG_ON
+#ifdef DEBUG_CMAC
 #include <stdio.h>
 void print_hex(const char *str, const unsigned char *buf, int len) {
 	int i;

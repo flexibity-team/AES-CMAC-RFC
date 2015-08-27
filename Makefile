@@ -1,6 +1,6 @@
 
 CC= gcc
-CFLAGS=-g -Wall -DCMAC_DEBUG_ON
+CFLAGS=-g -Wall -DDEBUG_CMAC
 INCLUDEDIR= -I .
 EXT_SOURCES= TI_aes_128.c cmac.c
 
