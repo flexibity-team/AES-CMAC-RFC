@@ -2,7 +2,7 @@
 CC= gcc
 CFLAGS=-g -Wall -DDEBUG_CMAC
 INCLUDEDIR= -I .
-EXT_SOURCES= TI_aes_128.c cmac.c
+EXT_SOURCES= TI_aes_128.c aes-cbc-cmac.c
 
 EXT_OBJ=$(EXT_SOURCES:.c=.o)
 EXECUTABLE= main

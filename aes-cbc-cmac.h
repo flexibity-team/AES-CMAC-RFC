@@ -25,8 +25,8 @@
  *
  *
  */
-#ifndef CMAC_H_
-#define CMAC_H_
+#ifndef AES_CBC_CMAC_H_
+#define AES_CBC_CMAC_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,11 +35,19 @@ extern "C" {
 #define BLOCK_SIZE 16
 #define LAST_INDEX (BLOCK_SIZE - 1)
 
+int AES_CBC_ENC(const unsigned char *IV, const unsigned char *key,
+		const unsigned char *input, int inputLength, unsigned char *output,
+		int outputLength);
+
+int AES_CBC_DEC(const unsigned char *IV, const unsigned char *key,
+		const unsigned char *input, int inputLength, unsigned char *output,
+		int outputLength);
+
 void AES_CMAC(const unsigned char *key, const unsigned char *input, int length,
 		unsigned char *mac);
 
-int AES_CMAC_CHECK(const unsigned char *key, const unsigned char *input, int length,
-		const unsigned char *mac);
+int AES_CMAC_CHECK(const unsigned char *key, const unsigned char *input,
+		int length, const unsigned char *mac);
 
 #ifdef DEBUG_CMAC
 void print_hex(const char *str, const unsigned char *buf, int len);
@@ -51,4 +59,4 @@ void print96(const unsigned char *bytes);
 }
 #endif
 
-#endif /* CMAC_H_ */
+#endif /* AES_CBC_CMAC_H_ */

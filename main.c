@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cmac.h"
+#include "aes-cbc-cmac.h"
 
 int main() {
 	//unsigned char L[BLOCK_SIZE], K1[BLOCK_SIZE], K2[BLOCK_SIZE];
@@ -27,8 +27,15 @@ int main() {
 
 	const unsigned char key2[BLOCK_SIZE] = "password\0\0\0\0\0\0\0\0";
 	const unsigned char M2[] = "1234567890;09876543";
+	const unsigned char M2_ENC[BLOCK_SIZE*3];
 	const unsigned char T2[BLOCK_SIZE] = { 0xef, 0xf2, 0x2d, 0x3a, 0x78, 0x7b,
 			0xd8, 0xa5, 0x2b, 0xd4, 0x7e, 0xd5, 0x87, 0xd9, 0xb0, 0xd6 };
+
+
+	unsigned char src_str[BLOCK_SIZE * 5 + 1] = {0};
+	unsigned char dst_str[BLOCK_SIZE * 5 + 1] = {0};
+	unsigned char decyph_str[BLOCK_SIZE * 5 + 1] = {0};
+
 
 	printf("--------------------------------------------------\n");
 	printf("K              ");
@@ -90,6 +97,39 @@ int main() {
 	print128(T);
 	printf("\n");
 	printf("AES_CMAC_CHECK: %d\n", AES_CMAC_CHECK(key2, M2, ms2, T2));
+	printf(M2);
+	printf("\n");
+	AES_CBC_ENC( T64, key2, M2, sizeof(M2), M2_ENC, sizeof(M2_ENC) );
+	memset(M2, 0, sizeof(M2));
+	AES_CBC_DEC( T64, key2, M2_ENC, sizeof(M2_ENC), M2, sizeof(M2) );
+	printf(M2);
+
+
+	for(int i = 0; i < sizeof(dst_str) - 1; i++){
+		src_str[i] = '0' + i;
+		memset(dst_str, 0, sizeof(dst_str));
+		int src_size = i + 1;
+		int dst_size = AES_CBC_ENC( T64, key2, src_str, src_size, dst_str, sizeof(dst_str));
+		memset(decyph_str, 0, sizeof(decyph_str));
+		int decyph_size = AES_CBC_DEC( T64, key2, dst_str, dst_size, decyph_str, sizeof(decyph_str));
+		printf("\nS:");
+		printf(src_str);
+		printf("\nD:");
+		printf(decyph_str);
+		printf("\nC: ");
+		print_hex("   ", dst_str, dst_size);
+		printf("\n");
+		int test = (strlen(decyph_str) == strlen(src_str) && strcmp(decyph_str, src_str) == 0 );
+		printf("\nTEST: %d", test);
+		printf("\n");
+
+		if(test == 0){
+			printf("\ntest fail!\n");
+			break;
+		}
+	}
+
+	printf("\n");
 	printf("--------------------------------------------------\n");
 
 	return 0;
