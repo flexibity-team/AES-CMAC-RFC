@@ -90,7 +90,7 @@ int AES_CMAC_CHECK(const unsigned char *key, const unsigned char *input, int len
 	return memcmp(mac, T, BLOCK_SIZE);
 }
 
-static void AES_128(unsigned const char *key, unsigned const char* msg, unsigned char *cipher){
+static void AES_128_ENC(unsigned const char *key, unsigned const char* msg, unsigned char *cipher){
 	unsigned char key_copy[BLOCK_SIZE];
 	memcpy(cipher, msg, BLOCK_SIZE);
 	memcpy(key_copy, key, BLOCK_SIZE);
@@ -148,7 +148,7 @@ int AES_CBC_ENC(const unsigned char *IV, const unsigned char *key, const unsigne
 		}
 		int outLen = (BLOCK_SIZE < outputLength)?BLOCK_SIZE:outputLength;
 		xor_128(X, text, Y);
-		AES_128(key, Y, X);
+		AES_128_ENC(key, Y, X);
 		memcpy(output, X, outLen);
 		outputLength -= outLen;
 		output += outLen;
@@ -158,7 +158,7 @@ int AES_CBC_ENC(const unsigned char *IV, const unsigned char *key, const unsigne
 }
 
 int AES_CBC_DEC(const unsigned char *IV, const unsigned char *key, const unsigned char *input, int inputLength, unsigned char *output, int outputLength){
-	unsigned char X[BLOCK_SIZE], Y[BLOCK_SIZE], Z[BLOCK_SIZE], M_last[BLOCK_SIZE];
+	unsigned char X[BLOCK_SIZE], Y[BLOCK_SIZE], Z[BLOCK_SIZE];
 
 	if (inputLength <= 0)
 		return 0; //nothing to encode
@@ -202,7 +202,7 @@ char *K2) {
 	unsigned char L[BLOCK_SIZE];
 	unsigned char tmp[BLOCK_SIZE];
 
-	AES_128(key, const_Zero, L);
+	AES_128_ENC(key, const_Zero, L);
 
 	if ((L[0] & 0x80) == 0) { /* If MSB(L) = 0, then K1 = L << 1 */
 		leftshift_onebit(L, K1);
@@ -266,11 +266,11 @@ void AES_CMAC(const unsigned char *key, const unsigned char *input, int length,
 	memset(X, 0, BLOCK_SIZE);
 	for (i = 0; i < n - 1; i++) {
 		xor_128(X, &input[BLOCK_SIZE * i], Y); /* Y := Mi (+) X  */
-		AES_128(key, Y, X); /* X := AES-128(KEY, Y); */
+		AES_128_ENC(key, Y, X); /* X := AES-128(KEY, Y); */
 	}
 
 	xor_128(X, M_last, Y);
-	AES_128(key, Y, X);
+	AES_128_ENC(key, Y, X);
 
 	memcpy(mac, X, BLOCK_SIZE);
 }
