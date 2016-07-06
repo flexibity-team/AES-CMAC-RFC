@@ -97,14 +97,14 @@ static void AES_128_ENC(unsigned const char *key, unsigned const char* msg, unsi
 	aes_enc_dec(cipher, key_copy, 0);
 }
 
-static void AES_128_DEC(unsigned const char *key, unsigned const char* msg, unsigned char *cipher){
+void AES_128_DEC(unsigned const char *key, unsigned const char* msg, unsigned char *cipher){
 	unsigned char key_copy[BLOCK_SIZE];
 	memcpy(cipher, msg, BLOCK_SIZE);
 	memcpy(key_copy, key, BLOCK_SIZE);
 	aes_enc_dec(cipher, key_copy, 1);
 }
 
-static void xor_128(const unsigned char *a, const unsigned char *b, unsigned char *out) {
+void xor_128(const unsigned char *a, const unsigned char *b, unsigned char *out) {
 	int i;
 	for (i = 0; i < BLOCK_SIZE; i++) {
 		out[i] = a[i] ^ b[i];
@@ -158,7 +158,7 @@ int AES_CBC_ENC(const unsigned char *IV, const unsigned char *key, const unsigne
 }
 
 int AES_CBC_DEC(const unsigned char *IV, const unsigned char *key, const unsigned char *input, int inputLength, unsigned char *output, int outputLength){
-	unsigned char X[BLOCK_SIZE], Y[BLOCK_SIZE], Z[BLOCK_SIZE];
+	unsigned char X[BLOCK_SIZE], text[BLOCK_SIZE], Z[BLOCK_SIZE];
 
 	if (inputLength <= 0)
 		return 0; //nothing to encode
@@ -167,15 +167,13 @@ int AES_CBC_DEC(const unsigned char *IV, const unsigned char *key, const unsigne
 
 	int n = (inputLength + LAST_INDEX) / BLOCK_SIZE;
 
+	memcpy(Z, IV, BLOCK_SIZE);
 	for (int i = 0; (i < n) && outputLength > 0; i++) {
-		unsigned const char * text = &input[BLOCK_SIZE * i];
-		AES_128_DEC(key, text, X);
-		if( i != 0 ){
-			xor_128(Z, X, Y);
-		}else
-			xor_128(IV, X, Y);
-		memcpy(output, Y, BLOCK_SIZE);
-		memcpy(Z, text, BLOCK_SIZE);
+		unsigned const char * cipher = &input[BLOCK_SIZE * i];
+		AES_128_DEC(key, cipher, X);
+		xor_128(Z, X, text);
+		memcpy(Z, cipher, BLOCK_SIZE);
+		memcpy(output, text, BLOCK_SIZE);
 		outputLength -= BLOCK_SIZE;
 		output += BLOCK_SIZE;
 	}
